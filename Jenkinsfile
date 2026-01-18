@@ -26,16 +26,17 @@ pipeline {
 }
 
         stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv("${SONARQUBE_ENV}") {
-                    sh '''
-                    mvn sonar:sonar \
-                    -Dsonar.projectKey=java-app \
-                    -Dsonar.projectName=java-app
-                    '''
-                }
-            }
+    steps {
+        dir('java-app')
+        withSonarQubeEnv("${SONARQUBE_ENV}") {
+            sh '''
+            mvn sonar:sonar \
+            -Dsonar.projectKey=java-app \
+            -Dsonar.projectName=java-app
+            '''
         }
+    }
+}
 
         stage('Quality Gate') {
             steps {
