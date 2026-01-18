@@ -1,5 +1,5 @@
 pipeline {
-    agent { label= ubuntu}
+    agent { label "slave-1"}
 
     environment {
         SONARQUBE_ENV = 'sonarqube-server'
@@ -10,7 +10,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                checkout scm
+                git 'https://github.com/siddana123/java-sample-app-docker.git'
             }
         }
 
