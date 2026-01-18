@@ -33,10 +33,12 @@ pipeline {
 
         stage('Docker Build') {
             steps {
+                dir('java-app'){
                 sh 'docker build -t ${IMAGE_NAME}:latest .'
             }
         }
     }
+    
 
     post {
         success {
