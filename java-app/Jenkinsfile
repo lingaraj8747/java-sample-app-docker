@@ -1,3 +1,4 @@
+
 pipeline {
     agent { label "slave-1" }
 
@@ -21,9 +22,9 @@ pipeline {
                 dir('java-app') {
                     withSonarQubeEnv("${SONARQUBE_ENV}") {
                         sh '''
-                          mvn sonar:sonar \
-                          -Dsonar.projectKey=java-app \
-                          -Dsonar.projectName=java-app
+                        mvn sonar:sonar \
+                        -Dsonar.projectKey=java-app \
+                        -Dsonar.projectName=java-app
                         '''
                     }
                 }
@@ -46,5 +47,3 @@ pipeline {
         }
     }
 }
-
-
