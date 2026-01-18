@@ -1,6 +1,6 @@
 
 pipeline {
-    agent { label "slave-1"}
+    agent { label "slave-1" }
 
     environment {
         SONARQUBE_ENV = 'sonarqube-server'
@@ -9,36 +9,27 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-    steps {
-        git branch: 'main',
-            url: 'https://github.com/siddana123/java-sample-app-docker.git'
-    }
-}
-
-
-       stage('Build') {
-    steps {
-        dir('java-app') {
-            sh 'mvn clean package -DskipTests'
+        stage('Build') {
+            steps {
+                dir('java-app') {
+                    sh 'mvn clean package -DskipTests'
+                }
+            }
         }
-    }
-}
 
         stage('SonarQube Analysis') {
-    steps {
-        dir('java-app')
-        withSonarQubeEnv("${SONARQUBE_ENV}") {
-            sh '''
-            mvn sonar:sonar \
-            -Dsonar.projectKey=java-app \
-            -Dsonar.projectName=java-app
-            '''
+            steps {
+                dir('java-app') {
+                    withSonarQubeEnv("${SONARQUBE_ENV}") {
+                        sh '''
+                        mvn sonar:sonar \
+                        -Dsonar.projectKey=java-app \
+                        -Dsonar.projectName=java-app
+                        '''
+                    }
+                }
+            }
         }
-    }
-}
-
-       
 
         stage('Docker Build') {
             steps {
@@ -56,3 +47,4 @@ pipeline {
         }
     }
 }
+
