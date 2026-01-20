@@ -22,10 +22,18 @@ pipeline {
                     withSonarQubeEnv("${SONARQUBE_ENV}") {
                         sh '''
                         mvn sonar:sonar \
-                        -Dsonar.projectKey=java-app \
-                        -Dsonar.projectName=java-app
+                          -Dsonar.projectKey=java-app \
+                          -Dsonar.projectName=java-app
                         '''
                     }
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
@@ -33,21 +41,21 @@ pipeline {
         stage('Docker Build') {
             steps {
                 dir('java-app') {
-                    sh 'docker build -t ${IMAGE_NAME}:latest .'
+                    sh "docker build -t ${IMAGE_NAME}:latest ."
                 }
             }
         }
-
-    }   // ✅ closes stages block
+    }
 
     post {
         success {
-            echo 'Build, SonarQube analysis, and Docker image creation completed successfully'
+            echo 'Build, SonarQube analysis, Quality Gate, and Docker image completed successfully'
         }
         failure {
             echo 'Pipeline failed'
         }
     }
 }
+
 
 
