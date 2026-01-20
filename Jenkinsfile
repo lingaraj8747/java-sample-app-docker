@@ -1,5 +1,5 @@
 pipeline {
-    agent { label "slave-1" }
+    agent { label "Raju" }
 
     environment {
         SONARQUBE_ENV = 'sonarqube-server'
