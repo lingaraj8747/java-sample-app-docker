@@ -7,7 +7,6 @@ pipeline {
     }
 
     stages {
-
         stage('Build') {
             steps {
                 dir('java-app') {
@@ -16,25 +15,22 @@ pipeline {
             }
         }
 
-  stage('SonarQube Analysis') {
-      steps {
-        dir('java-app') {
-            withSonarQubeEnv('sonarqube-server') {
-                withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
-                    sh '''
-                      mvn sonar:sonar \
-                      -Dsonar.projectKey=java-app \
-                      -Dsonar.projectName=java-app \
-                      -Dsonar.login=$SONAR_TOKEN
-                    '''
-                 }
-              }
-          }
-       } 
-    }
-
-
-       
+        stage('SonarQube Analysis') {
+            steps {
+                dir('java-app') {
+                    withSonarQubeEnv('sonarqube-server') {
+                        withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
+                            sh '''
+                                mvn sonar:sonar \
+                                -Dsonar.projectKey=java-app \
+                                -Dsonar.projectName=java-app \
+                                -Dsonar.login=$SONAR_TOKEN
+                            '''
+                        }
+                    }
+                }
+            }
+        }
 
         stage('Docker Build') {
             steps {
@@ -54,3 +50,4 @@ pipeline {
         }
     }
 }
+
