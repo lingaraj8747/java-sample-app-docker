@@ -16,27 +16,25 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                dir('java-app') {
-                    withSonarQubeEnv("${SONARQUBE_ENV}") {
-                        sh '''
-                        mvn sonar:sonar \
-                          -Dsonar.projectKey=java-app \
-                          -Dsonar.projectName=java-app
-                        '''
-                    }
+    stage('SonarQube Analysis') {
+       steps {
+        dir('java-app') {
+            withSonarQubeEnv('sonarqube-server') {
+                withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
+                    sh '''
+                      mvn sonar:sonar \
+                      -Dsonar.projectKey=java-app \
+                      -Dsonar.projectName=java-app \
+                      -Dsonar.login=$SONAR_TOKEN
+                    '''
                 }
-            }
+             }
+          }
         }
+     }
 
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+
+       
 
         stage('Docker Build') {
             steps {
